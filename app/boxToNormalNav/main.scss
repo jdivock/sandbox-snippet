@@ -1,0 +1,64 @@
+@import "bower_components/scut/dist/scut";
+@import "compass/css3/box-sizing";
+
+*,
+*:before,
+*:after {
+    @include box-sizing(border-box);
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    @include scut-reset;
+}
+
+body {
+    margin: 0;
+}
+
+body > ul {
+    @include scut-list-inline;
+}
+
+ul > li {
+    background-color: yellow;
+    position: relative;
+    width: 25%;
+    margin-left: -4px;
+}
+
+ul > li > ul {
+    @include scut-list-unstyled;
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 500%;
+    > li {
+        background-color: red;
+    }
+}
+
+ul > li {
+    &:hover > ul {
+        display: inline;
+    }
+}
+
+@media (max-width: 768px) {
+    ul > li {
+        width: 50%;
+        &:nth-child(odd) {
+            clear: both;
+        }
+        &:nth-child(even) ul {
+            margin-left: -100%;
+        }
+        > ul {
+        	position: static;
+            float: left;
+            width: 400%;
+        }
+    }
+}
