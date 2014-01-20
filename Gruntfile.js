@@ -7,7 +7,7 @@
 // use this if you want to recursively match all subfolders:
 // 'test/spec/**/*.js'
 
-module.exports = function (grunt) {
+module.exports = function(grunt) {
     // show elapsed time at the end
     require('time-grunt')(grunt);
     // load all grunt tasks
@@ -261,6 +261,28 @@ module.exports = function (grunt) {
                     ]
                 }]
             },
+            dev: {
+                files: [{
+                    expand: true,
+                    dot: true,
+                    cwd: '<%= yeoman.app %>',
+                    dest: '<%= yeoman.dist %>',
+                    src: [
+                        '**/*.*'
+                    ]
+                }]
+            },
+            devStyles: {
+                files: [{
+                    expand: true,
+                    dot: true,
+                    cwd: '.tmp',
+                    dest: '<%= yeoman.dist %>',
+                    src: [
+                        '**/*.*'
+                    ]
+                }]
+            },
             styles: {
                 expand: true,
                 dot: true,
@@ -297,9 +319,13 @@ module.exports = function (grunt) {
         }
     });
 
-    grunt.registerTask('serve', function (target) {
+    grunt.registerTask('serve', function(target) {
         if (target === 'dist') {
             return grunt.task.run(['build', 'connect:dist:keepalive']);
+        }
+
+        if (target === 'dev') {
+            return grunt.task.run(['build:dev', 'connect:dist:keepalive']);
         }
 
         grunt.task.run([
@@ -311,9 +337,9 @@ module.exports = function (grunt) {
         ]);
     });
 
-    grunt.registerTask('server', function () {
-      grunt.log.warn('The `server` task has been deprecated. Use `grunt serve` to start a server.');
-      grunt.task.run(['serve']);
+    grunt.registerTask('server', function() {
+        grunt.log.warn('The `server` task has been deprecated. Use `grunt serve` to start a server.');
+        grunt.task.run(['serve']);
     });
 
     grunt.registerTask('test', [
@@ -324,19 +350,31 @@ module.exports = function (grunt) {
         'mocha'
     ]);
 
-    grunt.registerTask('build', [
-        'clean:dist',
-        'useminPrepare',
-        'concurrent:dist',
-        'autoprefixer',
-        'concat',
-        'cssmin',
-        'uglify',
-        'modernizr',
-        'copy:dist',
-        'rev',
-        'usemin'
-    ]);
+    grunt.registerTask('build', function(target) {
+        if (target === 'dev') {
+            return grunt.task.run([
+                'clean:dist',
+                'compass:server',
+                'autoprefixer',
+                'copy:dev',
+                'copy:devStyles'
+            ]);
+        }
+
+        grunt.task.run([
+            'clean:dist',
+            'useminPrepare',
+            'concurrent:dist',
+            'autoprefixer',
+            'concat',
+            'cssmin',
+            'uglify',
+            'modernizr',
+            'copy:dist',
+            'rev',
+            'usemin'
+        ]);
+    });
 
     grunt.registerTask('default', [
         'jshint',

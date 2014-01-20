@@ -1,0 +1,55 @@
+@import "../bower_components/scut/dist/scut";
+
+@include scut-reset;
+
+h1 {
+    width: 100%;
+    font-size: 3em;
+    font-weight: bold;
+}
+
+body, html, article {
+    height: 100%;
+    margin: 0;
+}
+
+.container {
+    display: table;
+    table-layout: fixed;
+    height: 100%;
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+    .content {
+        display: table-cell;
+        vertical-align: middle;
+        h1 {
+        	display: inline;
+            color: #FFF;
+        }
+    }
+}
+
+section {
+    background-image: url(/slideshow/img/1.jpg);
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+    // height: 100%;
+    height: 800px;
+    width: 100%;
+}
+
+section + section {
+    background-image: url(/slideshow/img/4.jpg);
+}
+
+section + section + section {
+    background-image: url(/slideshow/img/3.jpg);
+}
+
+section + section + section + section {
+    background-image: url(/slideshow/img/2.jpg);
+}
