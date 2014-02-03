@@ -117,6 +117,8 @@ function setup_app_service {
 	append $SERVICEFILE "      echo \"usage: $APP {start|stop}\" ;;"
 	append $SERVICEFILE "esac"
 	append $SERVICEFILE "exit 0"
+
+	chmod +x $SERVICEFILE
 	
 }
 
