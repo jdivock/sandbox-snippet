@@ -97,7 +97,7 @@ function setup_app_service {
 
 	append $SERVICEFILE "function start_app {"
 	append $SERVICEFILE "	NODE_ENV=$NODE_ENV PORT=$PORT nohup /usr/local/bin/node $APPFOLDER/server.js >> $LOGFILE 2>&1 &"
-	append $SERVICEFILE "	\$! > \"/var/run/$SERVICENAME.pid\""
+	append $SERVICEFILE "	echo \$! > \"/var/run/$SERVICENAME.pid\""
 	append $SERVICEFILE "}"
 
 	append $SERVICEFILE "function stop_app {"
@@ -177,7 +177,7 @@ function setup_post_update_hook {
 	append $HOOK "echo \"------------------------------------------------------------------------\""
 	append $HOOK "echo \"Restart app\""
 	append $HOOK "echo \"------------------------------------------------------------------------\""
-	append $HOOK "sudo /etc/init.d/SERVICENAME restart"
+	append $HOOK "sudo /etc/init.d/$SERVICENAME restart"
 
 	# Clean-up
 	append $HOOK "cd $APPFOLDER"
