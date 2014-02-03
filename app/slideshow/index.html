@@ -25,45 +25,100 @@
 
     <nav>
         <ul>
-            <li>Me</li>
-            <li>Photos</li>
-            <li>Sandbox</li>
+            <li 
+                data-anchor-target="#home" 
+               
+                data-top="font-weight: bold;" 
+                data-bottom-bottom="font-weight: normal;"> 
+                <a href="#home">Home</a>
+            </li>
+            <li 
+                data-anchor-target="#projects" 
+                data-center-top="font-weight: normal;" 
+                data-top="font-weight: bold;" 
+                data-bottom-bottom="font-weight: normal;"> 
+                <a href="#projects">Side Projects</a>
+            </li>
+            <li 
+                data-anchor-target="#photos" 
+                data-center-top="font-weight: normal;" 
+                data-top="font-weight: bold;" 
+                data-bottom-bottom="font-weight: normal;"> 
+                <a href="#photos">Photography</a>
+            </li>
+            <li 
+                data-anchor-target="#blag" 
+                data-center-top="font-weight: normal;" 
+                data-top="font-weight: bold;" 
+                data-bottom-bottom="font-weight: normal;"> 
+                <a href="#blag">Blog</a>
+            </li>
         </ul>
     </nav>
 
     <article>
 
-        <section id='home'>
-            <div class="container">
+        <section id='home' >
+            <div class="container" 
+                data-anchor-target="#home" 
+                data-top-top="position: fixed; top:!50%;"
+                data-bottom-bottom="position: absolute; top: !75%; " 
+                > 
                 <div class="content">
-                    <h1 data-center="opacity: 1" data-top="opacity: 0">Section One</h1>
+                    <p>Web dev at Huge, powerlifting, chugging espresso, and eating BBQ until I feel bad about myself</p>
                 </div>
             </div>
         </section>
-        <section id='stuff'>
-            <div class="container">
+        <section id='projects'>
+            <div class="container" 
+                data-anchor-target="#projects" 
+                data-center-top="position: absolute; top: !25%;" 
+                data-top="position: fixed; top:!50%;" 
+                data-bottom-bottom="position: absolute; top: !75%;"> 
                 <div class="content">
-                    <h1 data-center="opacity: 1" data-top="opacity: 0">Section Two</h1>
+                   <ul>
+                        <li><a href="/BieberTweets">Bieber Tweets</a></li>
+                        <li><a href="/BieberTweets">Redis/SocketIO dictionary lookup</a></li>
+                        <li><a href="/BieberTweets">MultiPost</a></li>
+                    </ul>
                 </div>
             </div>
         </section>
-        <section>
-            <div class="container">
+        <section id="photos">
+            <div class="container" 
+            data-anchor-target="#photos" 
+            data-center-top="position: absolute; top: !25%;" 
+            data-top="position: fixed; top:!50%;" 
+            data-bottom-bottom="position: absolute; top: !75%;"> 
                 <div class="content">
-                    <h1 data-center="opacity: 1" data-top="opacity: 0">Section Three</h1>
+                 <p>Herp derp, flicker link here</p>
+                    
                 </div>
             </div>
         </section>
-        <section>
-            <div class="container">
+        <section id="blag">
+            <div class="container" 
+            data-anchor-target="#blag" 
+            data-center-top="position: absolute; top: !25%;" 
+            data-top="position: fixed; top:!50%;" 
+            data-bottom-bottom="position: absolute; top: !75%;"> 
                 <div class="content">
-                    <h1>Section Four</h1>
+                    <p>Just kidding I don't have anything to write</p>
                 </div>
             </div>
         </section>
 
     </article>
 
+
+    <footer>
+    <ul>
+    <li>   <i class="icon-flickr"></i> </li>
+    <li><i class="icon-github"></i></li>
+    <li><i class="icon-gplus"></i></li>
+    <li><i class="icon-twitter"></i> </li>
+    </ul>
+    </footer>
 
 
     <!-- build:js scripts/plugins.js -->
