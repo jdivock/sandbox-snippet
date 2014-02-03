@@ -30,7 +30,7 @@
 
 APPHOST=ec2-54-242-4-24.compute-1.amazonaws.com
 SERVICENAME=BieberTweets_angular
-PORT=3000
+PORT=3003
 NODE_ENV=production
 
 ################################################################################
@@ -40,10 +40,9 @@ NODE_ENV=production
 MAINUSER=$(whoami)
 MAINGROUP=$(id -g -n $MAINUSER)
 
-GITBAREREPO=/home/$MAINUSER/Repos/$SERVICENAME.git
+GITBAREREPO=/home/$MAINUSER/$SERVICENAME.git
 EXPORTFOLDER=/tmp/$SERVICENAME
 APPFOLDER=/home/$MAINUSER/Apps/$SERVICENAME
-APPEXECUTABLE=/home/$MAINUSER/Apps/.$SERVICENAME
 
 ################################################################################
 # Utility functions
@@ -86,32 +85,39 @@ function setup_app_service {
 	echo "Setup app service"
 	echo "--------------------------------------------------------------------------------"
 
-	local SERVICEFILE=/etc/init/$SERVICENAME.conf
+	local SERVICEFILE=/etc/init.d/$SERVICENAME
 	local LOGFILE=/var/log/$SERVICENAME.log
 
 	sudo rm -f $SERVICEFILE
 
-	append $SERVICEFILE "description \"$SERVICENAME\""
-	append $SERVICEFILE "author      \"Jason Divock <jdivock@gmail.com>\""
+	append $SERVICEFILE "#!/bin/bash"
+	append $SERVICEFILE " "
 
-	append $SERVICEFILE "start on runlevel [2345]"
-	append $SERVICEFILE "stop on restart"
-	append $SERVICEFILE "respawn"
+	append $SERVICEFILE "test -x \$NODE || exit 0"
 
-	append $SERVICEFILE "pre-start script"
-	append $SERVICEFILE "  echo \"[\$(/bin/date -u +%Y-%m-%dT%T.%3NZ)] (sys) Starting\" >> $LOGFILE"
-	append $SERVICEFILE "end script"
+	append $SERVICEFILE "function start_app {"
+	append $SERVICEFILE "	NODE_ENV=$NODE_ENV PORT=$PORT nohup /usr/local/bin/node $APPFOLDER/server.js >> $LOGFILE 2>&1 &"
+	append $SERVICEFILE "	\$! > \"/var/run/$SERVICENAME.pid\""
+	append $SERVICEFILE "}"
 
-	append $SERVICEFILE "pre-stop script"
-	append $SERVICEFILE "  rm -f /var/run/$SERVICENAME.pid"
-	append $SERVICEFILE "  echo \"[$(/bin/date -u +%Y-%m-%dT%T.%3NZ)] (sys) Stopping\" >> $LOGFILE"
-	append $SERVICEFILE "end script"
+	append $SERVICEFILE "function stop_app {"
+  	append $SERVICEFILE "kill `cat /var/run/$SERVICENAME.pid`"
+	append $SERVICEFILE "}"
 
-	append $SERVICEFILE "script"
-	append $SERVICEFILE "  sleep 5"
-	append $SERVICEFILE "  echo \$\$ > /var/run/$SERVICENAME.pid"
-	append $SERVICEFILE "  $APPEXECUTABLE \"$LOGFILE\""
-	append $SERVICEFILE "end script"
+	append $SERVICEFILE "case $1 in"
+	append $SERVICEFILE "   start)"
+	append $SERVICEFILE "      start_app ;;"
+	append $SERVICEFILE "    stop)"
+	append $SERVICEFILE "      stop_app ;;"
+	append $SERVICEFILE "    restart)"
+	append $SERVICEFILE "      stop_app"
+	append $SERVICEFILE "      start_app"
+	append $SERVICEFILE "      ;;"
+	append $SERVICEFILE "    *)"
+	append $SERVICEFILE "      echo \"usage: $APP {start|stop}\" ;;"
+	append $SERVICEFILE "esac"
+	append $SERVICEFILE "exit 0"
+	
 }
 
 function setup_bare_repo {
@@ -147,13 +153,13 @@ function setup_post_update_hook {
 	append $HOOK "mkdir -p $EXPORTFOLDER"
 	append $HOOK "git archive master | tar -x -C $EXPORTFOLDER"
 
-	append $HOOK "echo \"------------------------------------------------------------------------\""
-	append $HOOK "echo \"Updating production executable\""
-	append $HOOK "echo \"------------------------------------------------------------------------\""
-	append $HOOK "echo -e \"export NODE_ENV=$NODE_ENV\\n\" > $APPEXECUTABLE"
-	append $HOOK "echo -e \"export PORT=$PORT \\n\"  >> $APPEXECUTABLE"
-	append $HOOK "echo -e \"\\\n\\\n/usr/bin/node $APPFOLDER/server.js >> \\\$1 2>&1\" >> $APPEXECUTABLE"
-	append $HOOK "chmod 700 $APPEXECUTABLE"
+	# append $HOOK "echo \"------------------------------------------------------------------------\""
+	# append $HOOK "echo \"Updating production executable\""
+	# append $HOOK "echo \"------------------------------------------------------------------------\""
+	# append $HOOK "echo -e \"export NODE_ENV=$NODE_ENV\\n\" > $APPEXECUTABLE"
+	# append $HOOK "echo -e \"export PORT=$PORT \\n\"  >> $APPEXECUTABLE"
+	# append $HOOK "echo -e \"\\\n\\\n/usr/bin/node $APPFOLDER/server.js >> \\\$1 2>&1\" >> $APPEXECUTABLE"
+	# append $HOOK "chmod 700 $APPEXECUTABLE"
 
 	append $HOOK "echo \"------------------------------------------------------------------------\""
 	append $HOOK "echo \"Bundling app as a standalone Node.js app\""
@@ -171,7 +177,7 @@ function setup_post_update_hook {
 	append $HOOK "echo \"------------------------------------------------------------------------\""
 	append $HOOK "echo \"Restart app\""
 	append $HOOK "echo \"------------------------------------------------------------------------\""
-	append $HOOK "sudo service $SERVICENAME restart"
+	append $HOOK "sudo /etc/init.d/SERVICENAME restart"
 
 	# Clean-up
 	append $HOOK "cd $APPFOLDER"
